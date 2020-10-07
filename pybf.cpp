@@ -123,14 +123,15 @@ vector<unsigned int> Brainfuck::get_memory() {
 
 PYBIND11_MODULE(pybrainfuck, bf)
 {
+    bf.doc() = "You can analyze Brainfuck code quickly, using this module implemented with C++.";
     py::class_<Brainfuck>(bf, "Brainfuck")
-            .def(py::init())
-            .def(py::init<string>())
-            .def("analyze", &Brainfuck::analyze)
-            .def("set_code", &Brainfuck::set_code)
-            .def("get_code", &Brainfuck::get_code)
-            .def("get_ptr", &Brainfuck::get_ptr)
-            .def("get_code_ptr", &Brainfuck::get_code_ptr)
-            .def("get_memory", &Brainfuck::get_memory)
-            .def("get_steps", &Brainfuck::get_steps);
+            .def(py::init(), "The constructor in the case that you give the BF code later.")
+            .def(py::init<string>(), "The constructor in the case that you give the BF code file now.", py::arg("filename"))
+            .def("analyze", &Brainfuck::analyze, "analyze BF code and return the result")
+            .def("set_code", &Brainfuck::set_code, "set row BF code", py::arg("code"))
+            .def("get_code", &Brainfuck::get_code, "get row BF code")
+            .def("get_ptr", &Brainfuck::get_ptr, "get a current pointer of memory")
+            .def("get_code_ptr", &Brainfuck::get_code_ptr, "get a current pointer of BF code")
+            .def("get_memory", &Brainfuck::get_memory, "get a memory status as list")
+            .def("get_steps", &Brainfuck::get_steps, "get final analyzing step counts");
 }
