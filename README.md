@@ -2,6 +2,7 @@
 You can analyze Brainfuck code quickly, using this module implemented with C++.
 
 # Usage
+
 ```python
 from pybrainfuck import Brainfuck
 
@@ -18,7 +19,24 @@ if __name__ == '__main__':
 Hello, World!
 17896 steps.
 ```
+  
 
+```python
+from pybrainfuck import Brainfuck
+
+if __name__ == '__main__':
+    bf = Brainfuck() 
+    bf.set_code(",[.,]")
+    res = bf.analyze("ABCDEF")  # you can pass directly the input string as an argument.
+    steps = bf.get_steps()
+
+    print(f"{res}")
+    print(f"{steps} steps.")
+```
+```text
+ABCDEF
+26 steps.
+```
 # Installation
 1. **pip environment**
     ```shell script

@@ -3,6 +3,7 @@
 namespace py = pybind11;
 
 #include <stack>
+#include <queue>
 #include <vector>
 #include <sstream>
 #include <fstream>
@@ -20,6 +21,8 @@ constexpr char LOOP_END =  ']';
 constexpr char OUTPUT =  '.';
 constexpr char INPUT =  ',';
 
+constexpr char LF = 10;     //! Line Feed
+
 class Brainfuck{
 private:
     unsigned char memory[MEMORY]{};       //! the memory that consists of char, 1Byte=8bit variables (0~255)
@@ -34,7 +37,7 @@ private:
 public:
     Brainfuck();
     Brainfuck(string filename);
-    string analyze();
+    string analyze(string input = "");
 
     void set_code(string code){ this->code_len = code.size(); this->code = code; }
     string get_code(){ return this->code; }
@@ -60,8 +63,21 @@ Brainfuck::Brainfuck(string filename) {
     this->code_len = _code.size();
     this->code = _code;
 }
-string Brainfuck::analyze() {
+string Brainfuck::analyze(string input) {
+    this->ptr = 0;
+    this->code_ptr = 0;
+    memset(this->memory, 0, sizeof(this->memory));
+
+    queue<char> input_char; //! A Queue of input string
+    bool is_input = false;  //! Is the input string passed as an argument?
+
+    for(char& in: input)    // Queue
+        input_char.push(in);
+    if(!input_char.empty()) // Only the input string
+        is_input = true;
+
     string result;
+
     while (code_ptr < code_len) {
         steps++;
         switch (code[code_ptr]) {
@@ -102,10 +118,21 @@ string Brainfuck::analyze() {
                 loops.pop();
                 break;
             case OUTPUT:
-                result += memory[ptr];
+                result += (char)memory[ptr];
                 break;
             case INPUT:
-                memory[ptr] = getchar();
+                if(input_char.empty()) {
+                    if(is_input){
+                        memory[ptr] = 0;
+                        break;
+                    }
+                    auto tmp = getchar();
+                    memory[ptr] = (tmp != LF)? tmp: 0;  // if the end of a line, stop getting inputs.
+                }
+                else{
+                    memory[ptr] = input_char.front();
+                    input_char.pop();
+                }
                 break;
             default:
                 break;
@@ -127,7 +154,7 @@ PYBIND11_MODULE(pybrainfuck, bf)
     py::class_<Brainfuck>(bf, "Brainfuck")
             .def(py::init(), "The constructor in the case that you give the BF code later.")
             .def(py::init<string>(), "The constructor in the case that you give the BF code file now.", py::arg("filename"))
-            .def("analyze", &Brainfuck::analyze, "analyze BF code and return the result")
+            .def("analyze", &Brainfuck::analyze, "analyze BF code and return the result", py::arg("input") = "")
             .def("set_code", &Brainfuck::set_code, "set row BF code", py::arg("code"))
             .def("get_code", &Brainfuck::get_code, "get row BF code")
             .def("get_ptr", &Brainfuck::get_ptr, "get a current pointer of memory")
