@@ -11,6 +11,7 @@ namespace py = pybind11;
 using namespace std;
 
 constexpr int MEMORY = 1024;  //! the size of memory
+constexpr unsigned int MAX_STEPS = 1e7;  //! The maximum analyzing steps
 
 constexpr char INCREMENT =  '+';
 constexpr char DECREMENT =  '-';
@@ -80,6 +81,10 @@ string Brainfuck::analyze(string input) {
 
     while (code_ptr < code_len) {
         steps++;
+        if(steps > MAX_STEPS){
+            result += "\nError: An infinite loop may have happened or a total analyzing step was over the maximum steps.";
+            break;
+        }
         switch (code[code_ptr]) {
             case INCREMENT:
                 memory[ptr]++;
