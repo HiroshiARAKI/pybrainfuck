@@ -1,5 +1,8 @@
 # pyBrainfuck
-You can analyze Brainfuck code quickly, using this module implemented with C++.
+You can analyze Brainfuck code quickly, using this module implemented with C++.  
+  
+[WEBrainfuck++](https://bf.hirlab.net/) that was implemented by this module and Flask is available.  
+Please check it out!
 
 # Usage
 
@@ -40,12 +43,14 @@ ABCDEF
 # Installation
 1. **pip environment**
     ```shell script
-    $ cd [the parent directory of "pybrainfuck"]
+    $ git clone https://github.com/HiroshiARAKI/pybrainfuck.git
     $ pip install ./pybrainfuck
     ```
 1. **local environment**  
     After changing the python path in CMakeLists.txt, build the source code as below.
     ```shell script
+    $ git clone https://github.com/HiroshiARAKI/pybrainfuck.git
+    $ cd pybrainfuck
     $ mkdir build
     $ cd build
     $ cmake ..
